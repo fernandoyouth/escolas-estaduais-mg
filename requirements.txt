@@ -1,0 +1,8 @@
+pandas>=2.0
+numpy
+python-calamine
+openpyxl
+geopandas
+shapely
+pyogrio
+girth

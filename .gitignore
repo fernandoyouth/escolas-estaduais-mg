@@ -1,0 +1,4 @@
+tmp/
+dados/brutos/
+*.pkl
+__pycache__/
