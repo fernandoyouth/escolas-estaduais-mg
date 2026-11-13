@@ -1,4 +1,3 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}body{margin:0}</style>
 <title>Escolas Estaduais de Minas</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -109,7 +108,7 @@ select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid 
   <aside>
     <header>
       <h1>Escolas Estaduais de Minas Gerais</h1>
-      <div class="sub">Rede estadual em atividade · Censo Escolar 2024 · Ideb 2025 · INSE 2023</div>
+      <div class="sub">Rede estadual em atividade · Censo Escolar 2025 · Ideb 2025 · INSE 2023</div>
     </header>
 
     <div class="filters">
@@ -141,9 +140,10 @@ select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid 
           <option value="ideb_em">Ideb 2025 – ensino médio</option>
           <option value="ideb_af">Ideb 2025 – anos finais</option>
           <option value="ideb_ai">Ideb 2025 – anos iniciais</option>
-          <option value="aband">Abandono no ensino médio (2024)</option>
-          <option value="tdi">Distorção idade-série no médio (2024)</option>
+          <option value="aband">Abandono no ensino médio (2025)</option>
+          <option value="tdi">Distorção idade-série no médio (2025)</option>
           <option value="inse">Nível socioeconômico dos alunos (INSE)</option>
+          <option value="temp">Professores temporários (2025)</option>
           </optgroup>
           <optgroup label="Infraestrutura e equipamentos">
           <option value="comp">Alunos por computador (desktop, notebook, tablet)</option>
@@ -163,9 +163,9 @@ select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid 
     <div class="cross" id="cross"></div>
     <div id="ficha"><p class="hint">Clique em uma escola no mapa para ver alunos, equipamentos e infraestrutura. O tamanho do ponto indica o número de matrículas.</p></div>
 
-    <div class="src">Fontes: INEP — Microdados do Censo Escolar 2024 (escolas com dependência estadual em atividade); Ideb 2025 por escola; Taxas de rendimento e de distorção idade-série 2024; INSE 2023 (Saeb). "Esperado": regressão linear por etapa do Ideb 2025 sobre INSE, tamanho da escola (log das matrículas), localização, oferta noturna e proporção em tempo integral, entre as escolas estaduais de MG; resíduo padronizado pelo desvio-padrão da etapa. Coordenadas: Catálogo de Escolas INEP via geobr/Ipea. Limites: IBGE 2022. SRE inferida pelo código do órgão regional do Censo. Escolas sem coordenada aparecem na sede do município, marcadas como "localização aproximada".</div>
+    <div class="src">Fontes: INEP — Microdados do Censo Escolar 2025 (escolas com dependência estadual em atividade; endereços do Censo 2024); Ideb 2025 por escola; Taxas de rendimento e de distorção idade-série 2025; INSE 2023 (Saeb). "Esperado": regressão linear por etapa do Ideb 2025 sobre INSE, tamanho da escola (log das matrículas), localização, oferta noturna e proporção em tempo integral, entre as escolas estaduais de MG; resíduo padronizado pelo desvio-padrão da etapa. Coordenadas: Catálogo de Escolas INEP via geobr/Ipea. Limites: IBGE 2022. SRE inferida pelo código do órgão regional do Censo. Escolas sem coordenada aparecem na sede do município, marcadas como "localização aproximada".</div>
   </aside>
-  <div id="map"><div id="loading">Carregando 3.453 escolas…</div></div>
+  <div id="map"><div id="loading">Carregando 3.607 escolas…</div></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
@@ -187,8 +187,8 @@ const MODES={
   ideb_em:{title:'Ideb 2025 – ensino médio',fn:s=>bins(s.ideb_em,[4,4.5,5],['d','c','b','a']),cats:[['a','5,0 ou mais','--good'],['b','4,5 a 4,9','--accent'],['c','4,0 a 4,4','--warn'],['d','Abaixo de 4,0','--bad'],['x','Sem Ideb no médio','--none']]},
   ideb_af:{title:'Ideb 2025 – anos finais',fn:s=>bins(s.ideb_af,[4.5,5,5.5],['d','c','b','a']),cats:[['a','5,5 ou mais','--good'],['b','5,0 a 5,4','--accent'],['c','4,5 a 4,9','--warn'],['d','Abaixo de 4,5','--bad'],['x','Sem Ideb nos anos finais','--none']]},
   ideb_ai:{title:'Ideb 2025 – anos iniciais',fn:s=>bins(s.ideb_ai,[5.5,6,6.5],['d','c','b','a']),cats:[['a','6,5 ou mais','--good'],['b','6,0 a 6,4','--accent'],['c','5,5 a 5,9','--warn'],['d','Abaixo de 5,5','--bad'],['x','Sem Ideb nos anos iniciais','--none']]},
-  aband:{title:'Taxa de abandono no ensino médio (2024)',fn:s=>s.aband_em==null?'x':s.aband_em===0?'a':s.aband_em<3?'b':s.aband_em<8?'c':'d',cats:[['a','Zero','--good'],['b','Até 3%','--accent'],['c','3% a 8%','--warn'],['d','8% ou mais','--bad'],['x','Sem ensino médio','--none']]},
-  tdi:{title:'Distorção idade-série no ensino médio (2024)',note:'Alunos com 2 anos ou mais de atraso escolar.',fn:s=>bins(s.tdi_em,[10,20,30],['a','b','c','d']),cats:[['a','Menos de 10%','--good'],['b','10% a 20%','--accent'],['c','20% a 30%','--warn'],['d','30% ou mais','--bad'],['x','Sem ensino médio','--none']]},
+  aband:{title:'Taxa de abandono no ensino médio (2025)',fn:s=>s.aband_em==null?'x':s.aband_em===0?'a':s.aband_em<3?'b':s.aband_em<8?'c':'d',cats:[['a','Zero','--good'],['b','Até 3%','--accent'],['c','3% a 8%','--warn'],['d','8% ou mais','--bad'],['x','Sem ensino médio','--none']]},
+  tdi:{title:'Distorção idade-série no ensino médio (2025)',note:'Alunos com 2 anos ou mais de atraso escolar.',fn:s=>bins(s.tdi_em,[10,20,30],['a','b','c','d']),cats:[['a','Menos de 10%','--good'],['b','10% a 20%','--accent'],['c','20% a 30%','--warn'],['d','30% ou mais','--bad'],['x','Sem ensino médio','--none']]},
   inse:{title:'Nível socioeconômico dos alunos (INSE 2023)',note:'Quartis entre as escolas estaduais de MG.',fn:s=>bins(s.inse,D.inse_cuts,['q1','q2','q3','q4']),cats:[['q1','25% de escolas com alunos mais pobres','--s1'],['q2','2º quartil','--s2'],['q3','3º quartil','--s3'],['q4','25% com alunos menos pobres','--s4'],SEM]},
   comp:{title:'Alunos por computador',fn:s=>{const c=s.comp;if(!c)return 'nenhum';const r=s.QT_MAT_BAS/c;return r<=5?'a':r<=15?'b':r<=40?'c':'d'},
     cats:[['a','Até 5 alunos','--good'],['b','5 a 15','--accent'],['c','15 a 40','--warn'],['d','Mais de 40','--bad'],['nenhum','Sem computador para alunos','--none']]},
@@ -200,6 +200,7 @@ const MODES={
   labi:{title:'Laboratório de informática',fn:s=>s.IN_LABORATORIO_INFORMATICA?'s':'n',cats:[['s','Tem','--good'],['n','Não tem','--bad']]},
   bib:{title:'Biblioteca ou sala de leitura',fn:s=>(s.IN_BIBLIOTECA||s.IN_BIBLIOTECA_SALA_LEITURA)?'s':'n',cats:[['s','Tem','--good'],['n','Não tem','--bad']]},
   acess:{title:'Acessibilidade',fn:s=>s.IN_ACESSIBILIDADE_INEXISTENTE?'n':'s',cats:[['s','Possui algum recurso','--good'],['n','Nenhum recurso','--bad']]},
+  temp:{title:'Professores contratados temporariamente (2025)',note:'Percentual dos docentes da escola com contrato temporário, segundo o Censo Escolar 2025.',fn:s=>bins(s.pct_contrat,[40,60,80],['a','b','c','d']),cats:[['a','Menos de 40%','--good'],['b','40% a 60%','--accent'],['c','60% a 80%','--warn'],['d','80% ou mais','--bad'],SEM]},
   clima:{title:'Salas climatizadas',fn:s=>{const t=s.QT_SALAS_UTILIZADAS||0,c=s.QT_SALAS_UTILIZA_CLIMATIZADAS||0;return !c?'n':c>=t?'t':'p'},
     cats:[['t','Todas as salas','--good'],['p','Parte das salas','--warn'],['n','Nenhuma','--bad']]},
 };
@@ -279,7 +280,8 @@ function cross(){
   $('#cross').innerHTML=`<details open><summary class="lbl">O que o cruzamento mostra</summary>
   <p>Ideb 2025 médio do ensino médio, por nível socioeconômico dos alunos (linhas) e infraestrutura da escola (colunas):</p>
   <div class="tbl"><table><thead><tr><th>INSE</th>${head}</tr></thead><tbody>${body}</tbody></table></div>
-  <p>O nível socioeconômico dos alunos é o fator mais associado ao Ideb. Entre escolas de perfil parecido, a infraestrutura tem associação pequena: nos anos finais, ter internet para alunos, acessibilidade e até 15 alunos por computador soma cerca de 0,25 ponto de Ideb; no ensino médio, o efeito é menor e quase todo não significativo. Mas a infraestrutura é desigual: numa medida mais ampla (28 itens do Censo), o quarto de escolas com alunos mais pobres tem menos itens que as demais, e só 37% delas têm a infraestrutura básica e pedagógica completa, contra 55% no quarto menos pobre. O índice de 7 itens usado nas cores não capta essa diferença.</p>
+  <p>O nível socioeconômico dos alunos é o fator mais associado ao Ideb. Acompanhando a mesma escola de 2019 a 2025, ganhar infraestrutura não veio junto com Ideb maior; a permanência dos professores, sim. Mas a infraestrutura é desigual: numa medida mais ampla (28 itens do Censo), o quarto de escolas com alunos mais pobres tem menos itens que as demais, e só 37% delas têm a infraestrutura básica e pedagógica completa, contra 54% no quarto menos pobre. O índice de 7 itens usado nas cores não capta essa diferença.</p>
+  <p>Em 2025, 57% dos professores da rede eram contratados temporários; nas escolas com alunos mais pobres, 66%.</p>
   <p>São associações, não causas: escolas e alunos não foram sorteados, e os dados de infraestrutura são declarados pela própria escola.</p>
   <p>O modo <b>Resultado x esperado</b> compara cada escola com outras de perfil parecido, para apontar onde vale olhar mais de perto, não para atribuir culpa.</p></details>`;
 }
@@ -290,8 +292,9 @@ function res(s){
   if(s.mat_em!=null)p('Saeb médio: Mat. / Port.',`${dec(s.mat_em)} / ${dec(s.por_em)}`);
   if(s.z!=null)p(`Em relação ao esperado (${s.z_et})`,`${s.z>0?'+':''}${dec(s.z)} DP ${s.z<=-1?'(abaixo)':s.z>=1?'(acima)':'(dentro)'}`);
   const pc=v=>v==null?null:dec(v)+'%';
-  p('Abandono 2024 – anos finais',pc(s.aband_af));p('Abandono 2024 – médio',pc(s.aband_em));p('Reprovação 2024 – médio',pc(s.reprov_em));
+  p('Abandono 2025 – anos finais',pc(s.aband_af));p('Abandono 2025 – médio',pc(s.aband_em));p('Reprovação 2025 – médio',pc(s.reprov_em));
   p('Distorção idade-série – anos finais',pc(s.tdi_af));p('Distorção idade-série – médio',pc(s.tdi_em));
+  p('Professores temporários (2025)',s.pct_contrat!=null?dec(s.pct_contrat)+'%':null);
   p('Nível socioeconômico (INSE 2023)',s.inse!=null?`${dec(s.inse)} · nível ${s.inse_nivel}`:null);
   p('Índice de infraestrutura',`${s.infra} de 7`);
   return r.join('')||'<span>Sem indicadores publicados</span><span></span>';
@@ -326,4 +329,3 @@ function search(){
   box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const s=S[+b.dataset.i];map.setView([s.lat,s.lon],12);show(s);box.hidden=true});
 }
 </script>
-</html>

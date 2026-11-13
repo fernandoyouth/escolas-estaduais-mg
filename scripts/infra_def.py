@@ -1,10 +1,10 @@
-"""Teste de robustez: três definições alternativas de infraestrutura (Censo 2024) e o gradiente por nível socioeconômico.
+"""Teste de robustez: três definições alternativas de infraestrutura (Censo 2025) e o gradiente por nível socioeconômico.
 
-Entrada: M3.pkl (de model2.py) e dados/brutos/mg_estaduais_2024.csv. Saída: M4.pkl.
+Entrada: M3.pkl (de model2.py) e dados/brutos/mg_estaduais_2025.csv. Saída: M4.pkl.
 """
 import pandas as pd, numpy as np
 
-R = pd.read_csv('dados/brutos/mg_estaduais_2024.csv', sep=';', dtype=str)
+R = pd.read_csv('dados/brutos/mg_estaduais_2025.csv', sep=';', dtype=str)
 R = R[R.TP_SITUACAO_FUNCIONAMENTO == '1'].copy(); R['id'] = R.CO_ENTIDADE.astype(int)
 M = pd.read_pickle('M3.pkl').set_index('id'); R = R.set_index('id').loc[M.index]
 f = lambda c: pd.to_numeric(R[c], errors='coerce').fillna(0)

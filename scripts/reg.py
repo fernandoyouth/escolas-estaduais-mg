@@ -1,5 +1,7 @@
 import pandas as pd, numpy as np
-R=pd.read_csv('dados/brutos/mg_estaduais_2024.csv',sep=';',dtype=str)
+R=pd.read_csv('dados/brutos/mg_estaduais_2025.csv',sep=';',dtype=str)
+R24=pd.read_csv('dados/brutos/mg_estaduais_2024.csv',sep=';',dtype=str,usecols=['CO_MUNICIPIO','NO_MESORREGIAO']).drop_duplicates('CO_MUNICIPIO')
+R=R.merge(R24,on='CO_MUNICIPIO',how='left')  # Censo 2025 não traz mesorregião; vem do município
 R=R[R.TP_SITUACAO_FUNCIONAMENTO=='1'].copy(); R['id']=R.CO_ENTIDADE.astype(int); R=R.set_index('id')
 M=pd.read_pickle('M4.pkl'); M=M.join(R[['NO_MESORREGIAO','NO_REGIAO_GEOG_INTERM']],how='left')
 f=lambda c: pd.to_numeric(R.loc[M.index,c],errors='coerce').fillna(0).values

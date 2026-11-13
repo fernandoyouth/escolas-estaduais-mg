@@ -1,15 +1,16 @@
 # Escolas estaduais de Minas Gerais: infraestrutura, professores e resultados (2019–2025)
 
-Dados, scripts e mapa usados no estudo sobre as 3.453 escolas estaduais de Minas Gerais em atividade em 2024. Tudo parte de dados públicos do INEP e do Ipea, e qualquer número pode ser refeito a partir daqui.
+Dados, scripts e mapa usados no estudo sobre as 3.607 escolas estaduais de Minas Gerais em atividade no Censo Escolar 2025. Tudo parte de dados públicos do INEP e do Ipea, e qualquer número pode ser refeito a partir daqui.
 
 **Situação:** trabalho em andamento, sem revisão por pares. Os resultados são associações, não efeitos causais.
 
 ## Principais achados
 
-- **Infraestrutura.** Comparando escolas diferentes, mais infraestrutura acompanha Ideb um pouco maior (cerca de 0,04 ponto por ponto numa escala de 0 a 10). Acompanhando a mesma escola de 2019 a 2025, a associação some: a estimativa fica entre −0,01 e +0,01 nas três etapas.
-- **Desigualdade.** A infraestrutura é pior onde os alunos são mais pobres e nas mesorregiões do Vale do Mucuri, Norte e Jequitinhonha.
+- **Infraestrutura.** Comparando escolas diferentes, mais infraestrutura acompanha Ideb um pouco maior (cerca de 0,05 ponto por ponto numa escala de 0 a 10). Acompanhando a mesma escola de 2019 a 2025, a associação some: a estimativa fica entre −0,01 e +0,01 nas três etapas.
+- **Desigualdade.** A infraestrutura é pior onde os alunos são mais pobres e nas mesorregiões do Vale do Mucuri, Norte, Noroeste e Jequitinhonha.
 - **Professores.** A regularidade do corpo docente (permanência dos mesmos professores na escola) é o único fator escolar associado ao Ideb tanto entre escolas quanto dentro da mesma escola ao longo do tempo. No ensino médio e nos anos finais o resultado se mantém sem 2021; nos anos iniciais, não.
-- **Região metropolitana.** As 510 escolas das três SREs metropolitanas de Belo Horizonte ficam entre as de pior resultado em relação ao esperado para o perfil dos alunos. A diferença está na nota de aprendizagem, não na aprovação. A menor permanência docente está associada a cerca de um quinto dela; a infraestrutura, a nada.
+- **Vínculo.** Em 2025, 57% dos professores da rede eram contratados temporários (66% nas escolas de alunos mais pobres, 51% nas de alunos menos pobres). Mais temporários acompanham menos permanência, mas, considerada a permanência, a proporção de temporários não acompanha o Ideb.
+- **Região metropolitana.** As 511 escolas das três SREs metropolitanas de Belo Horizonte ficam entre as de pior resultado em relação ao esperado para o perfil dos alunos. A diferença está na nota de aprendizagem, não na aprovação. A menor permanência docente está associada a cerca de um quinto dela; a infraestrutura e a proporção de temporários, a nada.
 
 ## Estrutura
 
@@ -19,7 +20,7 @@ scripts/              análise, na ordem de scripts/executar.sh
   executar.sh         roda tudo
 dados/processados/    bases finais (CSV separado por ponto e vírgula, decimal com vírgula)
   escolas_estaduais_mg_indicadores.csv   uma linha por escola: matrículas, equipamentos,
-                                         infraestrutura, Ideb, rendimento, INSE, resultado esperado
+                                         infraestrutura, professores, Ideb, rendimento, INSE, resultado esperado
   painel_escolas_2019_2025.csv           escola × etapa × ano: Ideb, escala de infraestrutura,
                                          indicadores docentes e controles
   irt_params.json                        parâmetros da escala de infraestrutura (TRI)
@@ -43,19 +44,19 @@ Os scripts gravam arquivos intermediários (`*.pkl`, `data.json`) na raiz do rep
 
 | Dado | Ano | Fonte |
 | --- | --- | --- |
-| Microdados do Censo Escolar | 2019, 2021, 2023, 2024 | INEP |
+| Microdados do Censo Escolar | 2019, 2021, 2023, 2024, 2025 | INEP |
 | Ideb por escola (série 2017–2025) | 2025 | INEP |
-| Taxas de rendimento e distorção idade-série por escola | 2024 | INEP |
+| Taxas de rendimento e distorção idade-série por escola | 2025 | INEP |
 | Indicador de Nível Socioeconômico (INSE) por escola | 2023 | INEP |
 | Adequação da formação docente e regularidade do corpo docente | 2019–2025 | INEP |
 | Coordenadas das escolas e limites municipais | 2023 / 2022 | geobr (Ipea), a partir do Catálogo de Escolas do INEP e do IBGE |
 
 ## Método em resumo
 
-- **Recorte:** escolas com dependência administrativa estadual, em atividade, em Minas Gerais.
-- **Escala de infraestrutura:** modelo de Teoria de Resposta ao Item de 2 parâmetros com 40 itens do Censo, calibrado em conjunto para 2019, 2021, 2023 e 2024, no espírito de Alves e Xavier (2018) e Soares Neto et al. (2013).
+- **Recorte:** escolas com dependência administrativa estadual, em atividade, em Minas Gerais, no Censo Escolar 2025. O Censo 2025 vem em tabelas separadas (escola, matrícula, turma, docente), juntadas por `scripts/juntar_censo_2025.py`; endereço, telefone e mesorregião vêm do Censo 2024.
+- **Escala de infraestrutura:** modelo de Teoria de Resposta ao Item de 2 parâmetros com 42 itens do Censo, calibrado em conjunto para 2019, 2021, 2023 e 2025, no espírito de Alves e Xavier (2018) e Soares Neto et al. (2013).
 - **Resultado esperado:** regressão do Ideb 2025 de cada etapa sobre INSE, tamanho da escola, localização, oferta noturna e tempo integral; o resíduo é padronizado pelo desvio-padrão da etapa.
-- **Painel:** Ideb de 2019 a 2025 com efeitos fixos de escola e de ano e erros-padrão agrupados por escola. O Ideb de 2025 é pareado com o Censo 2024.
+- **Painel:** Ideb de 2019 a 2025 com efeitos fixos de escola e de ano e erros-padrão agrupados por escola. Cada edição do Ideb é pareada com o Censo do mesmo ano.
 - **SREs:** nomes inferidos a partir da cidade-sede de cada código de órgão regional do Censo.
 
 ## Limitações
@@ -64,8 +65,9 @@ Os scripts gravam arquivos intermediários (`*.pkl`, `data.json`) na raiz do rep
 - O INSE é de 2023 e fica constante no painel; cerca de 10% das escolas não têm INSE ou Ideb, em geral pequenas e rurais.
 - Infraestrutura declarada pela própria escola no Censo; registra a existência do item, não a conservação.
 - 2021 foi ano de pandemia; os resultados principais foram conferidos sem esse ano.
-- O vínculo dos professores (efetivo ou temporário) não está nos microdados públicos.
-- 111 escolas sem coordenada aparecem no mapa na sede do município.
+- O vínculo dos professores por escola só aparece a partir do Censo 2025; por isso entra no retrato de 2025, não no painel.
+- 159 escolas de 2025 não existiam em 2024: unidades rurais pequenas, quase todas sem Ideb nem INSE; entram no mapa, não nos modelos.
+- 270 escolas sem coordenada no geobr aparecem no mapa na sede do município.
 
 ## Referências citadas
 

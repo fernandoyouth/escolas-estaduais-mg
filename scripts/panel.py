@@ -1,12 +1,12 @@
 import pandas as pd, numpy as np, json
 U='dados/brutos/'
-files={2019:U+'hist/mg_estaduais_2019.csv',2021:U+'hist/mg_estaduais_2021.csv',2023:U+'hist/mg_estaduais_2023.csv',2024:U+'mg_estaduais_2024.csv'}
+files={2019:U+'hist/mg_estaduais_2019.csv',2021:U+'hist/mg_estaduais_2021.csv',2023:U+'hist/mg_estaduais_2023.csv',2025:U+'mg_estaduais_2025.csv'}
 C=[]
 for y,f in files.items():
     d=pd.read_csv(f,sep=';',dtype=str); d=d[d.TP_SITUACAO_FUNCIONAMENTO=='1']
     n=lambda c: pd.to_numeric(d[c],errors='coerce').fillna(0)
     C.append(pd.DataFrame({'id':d.CO_ENTIDADE.astype(int),'ano_c':y,'mat':n('QT_MAT_BAS'),'mat_em':n('QT_MAT_MED'),'mat_em_int':n('QT_MAT_MED_INT'),
-      'mat_fund':n('QT_MAT_FUND_AI')+n('QT_MAT_FUND_AF'),'mat_fund_int':n('QT_MAT_FUND_INT'),'mat_not':n('QT_MAT_BAS_N'),'rural':(d.TP_LOCALIZACAO=='2').astype(int),'meso':d.NO_MESORREGIAO}))
+      'mat_fund':n('QT_MAT_FUND_AI')+n('QT_MAT_FUND_AF'),'mat_fund_int':n('QT_MAT_FUND_INT'),'mat_not':n('QT_MAT_BAS_N'),'rural':(d.TP_LOCALIZACAO=='2').astype(int),'meso':d.get('NO_MESORREGIAO')}))
 C=pd.concat(C); C['ano']=C.ano_c.replace({2024:2025})
 S=pd.read_pickle('infra_scale.pkl'); S['ano']=S.ano.replace({2024:2025})
 H=pd.read_pickle('ideb_hist.pkl'); H=H[H.ano>=2019]

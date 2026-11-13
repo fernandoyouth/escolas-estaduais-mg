@@ -1,7 +1,7 @@
 import pandas as pd, numpy as np, json
 M=pd.read_pickle('M5.pkl')
 D=pd.read_pickle('docentes.pkl'); D25=D[D.ano==2025].set_index('id'); D24=D[D.ano==2024].set_index('id')
-S=pd.read_pickle('infra_scale.pkl'); S24=S[S.ano==2024].set_index('id')
+S=pd.read_pickle('infra_scale.pkl'); S24=S[S.ano==2025].set_index('id')  # Censo 2025
 H=pd.read_pickle('ideb_hist.pkl')
 M=M.join(D25[['ird','afd_af','afd_em']]).join(S24[['esc_geral','esc_estab','esc_ensino','esc_equid']])
 M['rmbh']=(M.NO_MESORREGIAO=='Metropolitana de Belo Horizonte').astype(int)

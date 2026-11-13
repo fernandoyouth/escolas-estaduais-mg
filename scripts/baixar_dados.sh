@@ -6,9 +6,16 @@ B=dados/brutos; mkdir -p $B/ind $B/hist/ind tmp
 INEP=https://download.inep.gov.br
 IND=$INEP/informacoes_estatisticas/indicadores_educacionais
 
-# Censo Escolar 2024 (todas as escolas) e recorte MG estadual
+# Censo Escolar 2025: tabelas separadas por tema, juntadas no recorte MG estadual
+# (o nome do arquivo no INEP termina mesmo com "_")
+curl -L -o tmp/censo2025.zip $INEP/dados_abertos/microdados_censo_escolar_2025_.zip
+python3 scripts/juntar_censo_2025.py tmp/censo2025.zip $B/mg_estaduais_2025.csv
+
+# Censo Escolar 2024: endereço, telefone e mesorregião (o Censo 2025 não traz esses campos)
 curl -L -o tmp/censo2024.zip $INEP/dados_abertos/microdados_censo_escolar_2024.zip
-unzip -o -j tmp/censo2024.zip "*/dados/microdados_ed_basica_2024.csv" -d $B
+unzip -o -j tmp/censo2024.zip "*/dados/microdados_ed_basica_2024.csv" -d tmp
+python3 scripts/filtrar_censo.py tmp/microdados_ed_basica_2024.csv $B/mg_estaduais_2024.csv
+rm tmp/microdados_ed_basica_2024.csv
 
 # Censos 2019, 2021, 2023 (painel): só o recorte MG estadual é mantido
 for y in 2019 2021 2023; do
@@ -28,9 +35,9 @@ for e in anos_iniciais anos_finais ensino_medio; do
   unzip -o -j tmp/ideb_$e.zip "*.xlsx" -d $B/ind
 done
 
-# Rendimento e distorção idade-série 2024, INSE 2023
-curl -L -o tmp/rend.zip $IND/2024/tx_rend_escolas_2024.zip && unzip -o -j tmp/rend.zip "*.xlsx" -d $B/ind
-curl -L -o tmp/tdi.zip $IND/2024/TDI_2024_ESCOLAS.zip && unzip -o -j tmp/tdi.zip "*.xlsx" -d $B/ind
+# Rendimento e distorção idade-série 2025, INSE 2023
+curl -L -o tmp/rend.zip $IND/2025/tx_rend_escolas_2025.zip && unzip -o -j tmp/rend.zip "*.xlsx" -d $B/ind
+curl -L -o tmp/tdi.zip $IND/2025/TDI_2025_ESCOLAS.zip && unzip -o -j tmp/tdi.zip "*.xlsx" -d $B/ind
 curl -L -o $B/ind/INSE_2023_escolas.xlsx $IND/2023/nivel_socioeconomico/INSE_2023_escolas.xlsx
 
 # Adequação da formação docente (AFD) e regularidade docente (IRD) por escola
